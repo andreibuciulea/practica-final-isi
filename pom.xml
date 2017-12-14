@@ -78,7 +78,7 @@
           <appName>practica-final-isi</appName>
           <processTypes>
             <!-- Tell Heroku how to launch your application -->
-            <web>java -jar ./target/practica_final_isi-0.0.1-SNAPSHOT-jar-with-dependencies.jar</web>
+            <web>java -jar ./target/practica-final-isi-0.0.1-SNAPSHOT-jar-with-dependencies.jar</web>
           </processTypes>
         </configuration>
       </plugin>
