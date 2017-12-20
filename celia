@@ -1,0 +1,14 @@
+para hacer consultas sobre esta informacion(la distancia que hay entre los personajes en el grafo) moderada en forma de grafo tenemos un software que nos permite hacer esto
+y esta en java pero no tiene test y queremos convertir eso en un servicio para forrarnos yq ue este en el web y que nos permita hacer querys. son software que funcionan en
+la linea de comandos entonces hay que integrarlo en spark para que funcione el servicio. este software que lo que hace es cargar en memoria en una estructura de datos grafos,
+pero tener esta info en un soporte de base de datos nos puede ayudar(querys que se hacen muchas veces puede ayudarlo tenerlo en una bsae de datos) seria razonable que la integracion
+que hagamos de este software de una app web tenga ademas una base de datos en la que o bien este toda la info alli y a lo mejor pasamos de utilizar este software en el grafo
+(tenerlo en la base de datos puede ser mas lento) pero puede ser que algunas de las querys que queremos hace puede que nos rente tenerlas precalculadas en la base de datos
+(que esto es mas rapido que calcularlo en un grafo) (con querys se refiere a este actor a que distancia esta de este otro actor (este ha participado en esta pelicula y el otro en
+esta otra y finalmente estan a esta distancia)mas o menos lo que hace facebook(infomarcion moderada en un grafo))
+la info de las pelicuas son unos ficheros (parsear la infomracion es lo que tiene que ahce nuestra app web formada por spark)ficheros de texto- nombre de pelicula
+ separado con slash los actores y asi cada pelicula. la categoria de cada pelicula la tenemos que extraer--> tenemos un fichero con todas las peliculas
+ y dentro de ese fichero tenemos otros ficheros que separa las peliculas por categorias(actor1,acotr2,acotr3 no esta normalizado es modelo relacional).
+ estos ficheros los sabe procesar nuestro software de grafos.
+ utiolizar "jnoc" apis de bajo nivel de base de dato.
+ escribir sentencias sql pero desde una api java que acaba traduciondose 
