@@ -1,3 +1,4 @@
+package urjc.isi.practica_final_isi.resources.code;
 /******************************************************************************
  *  Compilation:  javac PathFinder.java
  *  Execution:    java Pathfinder input.txt delimiter source

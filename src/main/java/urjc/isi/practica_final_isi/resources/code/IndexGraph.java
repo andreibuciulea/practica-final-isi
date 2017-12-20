@@ -1,3 +1,4 @@
+package urjc.isi.practica_final_isi.resources.code;
 /******************************************************************************
  *  Compilation:  javac IndexGraph.java
  *  Dependencies: Graph.java In.java

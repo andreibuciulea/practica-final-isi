@@ -1,3 +1,4 @@
+package urjc.isi.practica_final_isi.resources.code;
 /******************************************************************************
  *  Compilation:  javac BaconHistogram.java
  *  Execution:    java BaconHistogram input.txt

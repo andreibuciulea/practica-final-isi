@@ -1,4 +1,5 @@
-/******************************************************************************
+package urjc.isi.practica_final_isi.resources.code;
+/****************************************************************************** 
  *  Compilation:  javac StdOut.java
  *  Execution:    java StdOut
  *  Dependencies: none
