@@ -30,6 +30,7 @@ Planteamiento práctica:
 	- 
 
 	-MIRAR MAÑANA: test, forma normal 1 y forma normal 2, avanzar parte web.
+
 3.Bases de datos: 
 	tabla actores, tabla películas, tabla categorías, tablas relaciones(las que sean necesarias)
 
