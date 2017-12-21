@@ -16,14 +16,24 @@ la info de las pelicuas son unos ficheros (parsear la infomracion es lo que tien
  escribir sentencias sql pero desde una api java que acaba traduciondose 
 ---------------------------------------------------------------------------------------------------------------------
 Planteamiento práctica:
-1. (20/12/2017)Entendimiento de los programas ofrecidos. Programas más importantes:
+1. (20/12/2017)Entendimiento de los programas ofrecidos. Programas que vamos a utilizar para empezar:
 	-IndexGraph: nos devuelve los vecinos
 	-PathFinder: nos devuelve la distancia mas corta entre dos nodos.
+
 2. (21/12/2017)Resumen tutoria:
-	- usar httml para meter el comando que queremos ejecutar.
+	- usar spark para meter el comando que queremos ejecutar.
 	- crear bases de datos de las tablas que creamos que van a ser las más utilizadas
 	- cargar archivos de datos en la memoria.
 	- opcional: crear formulario en url.
 	- añadir en .travis.yml los correos electrónico de todos para que nos llegue los mensajes. 
-	
+	- modificar IndexGraph y PathFinder
+	- 
+
+	-MIRAR MAÑANA: test, forma normal 1 y forma normal 2, avanzar parte web.
+3.Bases de datos: 
+	tabla actores, tabla películas, tabla categorías, tablas relaciones(las que sean necesarias)
+
+4. Pasos seguidos en la practica:
+	- Leer parámetros de la url y clasificarlos en vecinos o en distancia.
+	- Crear tabla de actores, de películas y relaciones que es tabla participar (diagrama.v1.jpeg)
 	 
