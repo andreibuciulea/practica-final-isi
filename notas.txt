@@ -25,5 +25,5 @@ Planteamiento práctica:
 	- cargar archivos de datos en la memoria.
 	- opcional: crear formulario en url.
 	- añadir en .travis.yml los correos electrónico de todos para que nos llegue los mensajes. 
-	
+	prueba en mac
 	 
