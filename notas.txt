@@ -29,12 +29,19 @@ Planteamiento práctica:
 	- modificar IndexGraph y PathFinder
 	- 
 
-	-MIRAR MAÑANA: test, forma normal 1 y forma normal 2, avanzar parte web.
+	-MIRAR MAÑANA(22/12/2017): test, forma normal 1 y forma normal 2, avanzar parte web.
 
 3.Bases de datos: 
 	tabla actores, tabla películas, tabla categorías, tablas relaciones(las que sean necesarias)
-
-4. Pasos seguidos en la practica:
+4. Cosas que hacer:
+	- Pedir a Pedro documentación
+	- Aplicar forma normal (I, II o III) a la base de datos 
+	- Test 
+5. Pasos seguidos en la práctica:
 	- Leer parámetros de la url y clasificarlos en vecinos o en distancia.
 	- Crear tabla de actores, de películas y relaciones que es tabla participar (diagrama.v1.jpeg)
 	 
+	- Hemos introducido en Main los programas Pathfinder e IndexGraph 
+		Pathfinder devuelve la distancia entre dos nodos
+		Indexgrap devuelve los vecinos.
+	- Impresión de la salida en la web  
