@@ -16,6 +16,10 @@ import java.util.StringTokenizer;
 import javax.servlet.MultipartConfigElement;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
@@ -31,31 +35,59 @@ public class Main {
 
     // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
-    public static String doSelect(Request request, Response response) {
+   /* public static String doSelect(Request request, Response response) {
 	return select (connection, request.params(":table"), 
                                    request.params(":film"));
-    }
+    }*/
 
-    public static String select(Connection conn, String table, String film) {
-	String sql = "SELECT * FROM " + table + " WHERE film=?";
+    public static String select(Connection conn, String table, String peticion) {
+    
+	String sql = "SELECT * FROM " + table;
 
 	String result = new String();
 	
+	
+	System.out.println(sql);
+	
 	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-		pstmt.setString(1, film);
+		//pstmt.setString(1, film);
 		ResultSet rs = pstmt.executeQuery();
-		while (rs.next()) {
-		    // read the result set
-		    result += "film = " + rs.getString("film") + "\n";
-		    System.out.println("film = "+rs.getString("film") + "\n");
+		Boolean encontrado = true;
+		while (rs.next() && encontrado) {
+			
+			try {
+				File file = new File("test1.txt");
+				FileWriter fileWriter = new FileWriter(file);
+				//System.out.println("Esto es el archivo:" + rs.getString("archivo"));
+				fileWriter.write(rs.getString("archivo"));
+				fileWriter.close();
+				
+				String salida = IndexGraph("test1.txt","/", peticion);
+				System.out.println("ESto es salida:" + salida);
+				if(salida != "") {
+					result= salida;
+					
+					// guardar en BD(Tabla_vecinos): peticion/categoria(rs.getString("categ"))/vecinos(salida)
+					//
+					
+					encontrado = false;
+					
 
-		    result += "actor = " + rs.getString("actor") + "\n";
-		    System.out.println("actor = "+rs.getString("actor")+"\n");
+				}
+				
+				file.delete();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		}
 	    } catch (SQLException e) {
+	    System.out.println("aquiii");
 	    System.out.println(e.getMessage());
 	}
 	
+	 System.out.println("esto es result: " + result);
 	return result;
     }
     
@@ -84,13 +116,51 @@ public class Main {
   // 	System.out.println(res[4]);
     res[4]=res[4].replace("%20"," ");
     System.out.println(res[4]);
-    salida = IndexGraph("resources/data/other-data/movies.txt","/",res[4]);
+    
+
+    
+    //primero comprobar si está en la BSA y luego si no hacer el select.
+    
+    salida = select(connection, "categorias", res[4]);
+    
+   
+    
     salida  = salida.replaceAll("(\n)", "<br>");
     System.out.println(salida);
     	
   
 	return salida;
     }
+    
+    //cambiar distancia(copiar lo necesario del anterior main)
+    public static String Distancia(Request request, Response response) throws ClassNotFoundException, URISyntaxException {
+    	
+        String result = request.url();
+        String[] res = result.split("/");
+        String[] res1 = result.split("%20");
+        String salida = "";
+        System.out.println("Estoy en vecinos");
+        //a index graph se le pasa un autor y devuelve las peliculas en las que sale
+       				  //se le pasa una pelicula y devuelve los actores
+      // 	System.out.println(res[4]);
+        res[4]=res[4].replace("%20"," ");
+        System.out.println(res[4]);
+        
+
+        
+        //primero comprobar si está en la BSA y luego si no hacer el select.
+        
+        salida = select(connection, "categorias", res[4]);
+        
+       
+        
+        salida  = salida.replaceAll("(\n)", "<br>");
+        System.out.println(salida);
+        	
+      
+    	return salida;
+        }
+    
     
 	public static String IndexGraph(String filename, String delimiter, String peticion) {
 
@@ -129,6 +199,9 @@ public class Main {
 	// expression instead, as illustrated in the next sentence.
 	//get("/:table/:film", Main::doSelect);
 	get("/vecinos/*", Main::Vecinos);
+	
+	get("/distancia/*", Main::Distancia);
+	
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
 	get("/upload_films/*", (req, res) -> {
@@ -149,7 +222,7 @@ public class Main {
 				+ "<ul><li>Para cargar archivos: /upload_films/(categoría)</li>"
 				+ "<li>Buscar los actores de una película /vecinos/(Película)</li>"
 				+ "<li>Buscar las películas que tiene un actor /vecinos/(Actor)</li></ul>";
-		
+		System.out.println("inicio");
 		return inicio;
 	}); 
 	
@@ -172,9 +245,9 @@ public class Main {
 			// Prepare SQL to create table
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
-			statement.executeUpdate("drop table if exists films");
-			statement.executeUpdate("drop table if exists categorias");
-			statement.executeUpdate("create table categorias (categ string, archivo string)");
+			//statement.executeUpdate("drop table if exists films");
+			//statement.executeUpdate("drop table if exists categorias");
+			//statement.executeUpdate("create table categorias (categ string, archivo string)");
 
 			// Read contents of input stream that holds the uploaded file
 			InputStreamReader isr = new InputStreamReader(input);
@@ -199,6 +272,6 @@ public class Main {
 	if (processBuilder.environment().get("PORT") != null) {
 	    return Integer.parseInt(processBuilder.environment().get("PORT"));
 	}
-	return 4567; // return default port if heroku-port isn't set (i.e. on localhost)
+	return 7654; // return default port if heroku-port isn't set (i.e. on localhost)
     }
 }
