@@ -28,22 +28,19 @@ package urjc.isi.practica_final_isi.resources.code;
 
 public class IndexGraph {
 
-    public static void main(String[] args) {
+    public static String main(String filename, String delimiter, String peticion) {
 
         // read in the graph from a file
-        String filename = args[0];
-        String delimiter = args[1];
         Graph G = new Graph(filename, delimiter);
-
+        String respuesta = "";
         // read a vertex and print its neighbors
-        while (!StdIn.isEmpty()) {
-            String v = StdIn.readLine();
-            if (G.hasVertex(v)) {
-                for (String w : G.adjacentTo(v)) {
-                    StdOut.println("  " + w);
-                }
+        if (G.hasVertex(peticion)) {
+        	for (String w : G.adjacentTo(peticion)) {
+        		respuesta += w + "\n";
+        		//StdOut.println("  " + w);
             }
         }
+        return respuesta;
     }
 
 }
