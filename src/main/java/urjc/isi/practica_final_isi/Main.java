@@ -1,88 +1,152 @@
 package urjc.isi.practica_final_isi;
 
 import static spark.Spark.*;
-
 import spark.Request;
 import spark.Response;
 
-import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.Set;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
 
+import java.util.StringTokenizer;
+
+import javax.servlet.MultipartConfigElement;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+// This code is quite dirty. Use it just as a hello world example 
+// to learn how to use JDBC and SparkJava to upload a file, store 
+// it in a DB, and do a SQL SELECT query
 public class Main {
-  
-    public static String doWork(Request request, Response response) throws ClassNotFoundException, URISyntaxException {
+    
+    // Connection to the SQLite database. Used by insert and select methods.
+    // Initialized in main
+    private static Connection connection;
+
+    // Used to illustrate how to route requests to methods instead of
+    // using lambda expressions
+    public static String doSelect(Request request, Response response) {
+	return select (connection, request.params(":table"), 
+                                   request.params(":film"));
+    }
+
+    public static String select(Connection conn, String table, String film) {
+	String sql = "SELECT * FROM " + table + " WHERE film=?";
+
+	String result = new String();
 	
-    String result = request.url();
-    String[] res = result.split("/");
-    String[] res1 = result.split("%20");
-    //System.out.println(res[3]); //argumento[3] = distancia o vecinos
-    String salida = "";
-    if(res[3].equals("vecinos")) {
-    	System.out.println("Estoy en vecinos");
-    	//a index graph se le pasa un autor y devuelve las peliculas en las que sale
-    				  //se le pasa una pelicula y devuelve los actores
-  // 	System.out.println(res[4]);
-    	res[4]=res[4].replace("%20"," ");
-    	System.out.println(res[4]);
-    	salida = IndexGraph("resources/data/other-data/movies.txt","/",res[4]);
-    	System.out.println(salida);
-    	
-    }else if(res[3].equals("distancia")) {
-    	System.out.println("Estoy en distancia");
-    	res[4]=res[4].replace("%20"," ");
-    	res[5]=res[5].replace("%20"," ");
-    	System.out.println(res[4]);
-    	System.out.println(res[5]);
-    	salida = Calc_Dist("resources/data/other-data/movies.txt","/",res[4],res[5]);
-    	System.out.println(salida);
-    }else{
-    	System.out.print("Error: Parámetros erroneos ");
-    	System.out.println(res[3]);
-    }
-	return salida;
+	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		pstmt.setString(1, film);
+		ResultSet rs = pstmt.executeQuery();
+		while (rs.next()) {
+		    // read the result set
+		    result += "film = " + rs.getString("film") + "\n";
+		    System.out.println("film = "+rs.getString("film") + "\n");
+
+		    result += "actor = " + rs.getString("actor") + "\n";
+		    System.out.println("actor = "+rs.getString("actor")+"\n");
+		}
+	    } catch (SQLException e) {
+	    System.out.println(e.getMessage());
+	}
+	
+	return result;
     }
     
-    public static String Calc_Dist(String filename, String delimiter, String peticion1, String peticion2) {
-        Graph G = new Graph(filename, delimiter);
-        String respuesta = "";
-        PathFinder pf = new PathFinder(G, peticion1);
-        for (String v : pf.pathTo(peticion2)) {
-            respuesta += "   " + v + "<br>";
-        }
-        respuesta += "Distance " + pf.distanceTo(peticion2);
-        return respuesta; 
-    }
     
-	public static String IndexGraph(String filename, String delimiter, String peticion) {
+    public static void insert(Connection conn, String film, String actor) {
+	String sql = "INSERT INTO films(film, actor) VALUES(?,?)";
 
-            // read in the graph from a file
-            Graph G = new Graph(filename, delimiter);
-            String respuesta = "";
-            // read a vertex and print its neighbors
-            if (G.hasVertex(peticion)) {
-            	for (String w : G.adjacentTo(peticion)) {
-            		respuesta += "  " + w + "\n";
-            		//StdOut.println("  " + w);
-                }
-            }
-            return respuesta;
-
+	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		pstmt.setString(1, film);
+		pstmt.setString(2, actor);
+		pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	    System.out.println(e.getMessage());
+	}
     }
+    static String categoria = "";
+    public static void main(String[] args) throws 
+	ClassNotFoundException, SQLException {
+	port(getHerokuAssignedPort());
+	
+	
+	// Connect to SQLite sample.db database
+	// connection will be reused by every query in this simplistic example
+	connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
 
-	public static void main(String[] args) throws ClassNotFoundException {
-        port(getHerokuAssignedPort());
+	// In this case we use a Java 8 method reference to specify
+	// the method to be called when a GET /:table/:film HTTP request
+	// Main::doWork will return the result of the SQL select
+	// query. It could've been programmed using a lambda
+	// expression instead, as illustrated in the next sentence.
+	//get("/:table/:film", Main::doSelect);
 
-        // spark server
-        get("/*", Main::doWork);
-        
+	// In this case we use a Java 8 Lambda function to process the
+	// GET /upload_films HTTP request, and we return a form
+	get("/upload_films/*", (req, res) -> {
+		String formulario = "<form action='/upload' method='post' enctype='multipart/form-data'>" 
+			    + "    <input type='file' name='uploaded_films_file' accept='.txt'>"
+			    + "    <button>Upload file</button>" + "</form>";
+		System.out.println("La url");
+		String[] cat = req.url().split("/");
+		categoria = cat[4];
+		System.out.println(cat[4]);
+		
+		return formulario;
+	}); 
+	
+
+	
+	// You must use the name "uploaded_films_file" in the call to
+	// getPart to retrieve the uploaded file. See next call:
+
+
+	// Retrieves the file uploaded through the /upload_films HTML form
+	// Creates table and stores uploaded file in a two-columns table
+	post("/upload", (req, res) -> {
+		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/tmp"));
+		String result = "File uploaded!";
+		System.out.println(req.attributes());
+		System.out.println(res.body());
+		
+		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) { 
+			// getPart needs to use the same name "uploaded_films_file" used in the form
+
+			// Prepare SQL to create table
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30); // set timeout to 30 sec.
+			statement.executeUpdate("drop table if exists films");
+			statement.executeUpdate("create table films (film string, actor string)");
+
+			// Read contents of input stream that holds the uploaded file
+			InputStreamReader isr = new InputStreamReader(input);
+			BufferedReader br = new BufferedReader(isr);
+			String response = new String();
+			for (String line; (line = br.readLine()) != null; response += (line + "\n") );
+			System.out.println("cate");
+			System.out.println(categoria); // categoria = categoria
+			result = response;			   //result = el archivo
+			input.close();
+		    }
+		
+		//guardar categoria y archivo en la base de datos insert(conection,categ,archivo)
+		
+		return result;
+	    });
+
     }
 
     static int getHerokuAssignedPort() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        if (processBuilder.environment().get("PORT") != null) {
-            return Integer.parseInt(processBuilder.environment().get("PORT"));
-        }
-        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
+	ProcessBuilder processBuilder = new ProcessBuilder();
+	if (processBuilder.environment().get("PORT") != null) {
+	    return Integer.parseInt(processBuilder.environment().get("PORT"));
+	}
+	return 4567; // return default port if heroku-port isn't set (i.e. on localhost)
     }
 }
