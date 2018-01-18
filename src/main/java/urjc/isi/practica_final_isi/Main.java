@@ -18,6 +18,7 @@ import javax.servlet.MultipartConfigElement;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 
 // This code is quite dirty. Use it just as a hello world example 
 // to learn how to use JDBC and SparkJava to upload a file, store 
@@ -59,18 +60,59 @@ public class Main {
     }
     
     
-    public static void insert(Connection conn, String film, String actor) {
-	String sql = "INSERT INTO films(film, actor) VALUES(?,?)";
+    public static void insert(Connection conn, String categ, String archivo) {
+	String sql = "INSERT INTO categorias(categ, archivo) VALUES(?,?)";
 
 	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-		pstmt.setString(1, film);
-		pstmt.setString(2, actor);
+		pstmt.setString(1, categ);
+		pstmt.setString(2, archivo);
 		pstmt.executeUpdate();
 	    } catch (SQLException e) {
 	    System.out.println(e.getMessage());
 	}
     }
+    
+    public static String Vecinos(Request request, Response response) throws ClassNotFoundException, URISyntaxException {
+    	
+    String result = request.url();
+    String[] res = result.split("/");
+    String[] res1 = result.split("%20");
+    String salida = "";
+    System.out.println("Estoy en vecinos");
+    //a index graph se le pasa un autor y devuelve las peliculas en las que sale
+   				  //se le pasa una pelicula y devuelve los actores
+  // 	System.out.println(res[4]);
+    res[4]=res[4].replace("%20"," ");
+    System.out.println(res[4]);
+    salida = IndexGraph("resources/data/other-data/movies.txt","/",res[4]);
+    salida  = salida.replaceAll("(\n)", "<br>");
+    System.out.println(salida);
+    	
+  
+	return salida;
+    }
+    
+	public static String IndexGraph(String filename, String delimiter, String peticion) {
+
+        // read in the graph from a file
+        Graph G = new Graph(filename, delimiter);
+        String respuesta = "";
+        // read a vertex and print its neighbors
+        if (G.hasVertex(peticion)) {
+        	for (String w : G.adjacentTo(peticion)) {
+        		respuesta += "  " + w + "\n";
+        		//StdOut.println("  " + w);
+            }
+        }
+        return respuesta;
+
+}
+    
+    
+    
     static String categoria = "";
+    
+    
     public static void main(String[] args) throws 
 	ClassNotFoundException, SQLException {
 	port(getHerokuAssignedPort());
@@ -86,7 +128,7 @@ public class Main {
 	// query. It could've been programmed using a lambda
 	// expression instead, as illustrated in the next sentence.
 	//get("/:table/:film", Main::doSelect);
-
+	get("/vecinos/*", Main::Vecinos);
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
 	get("/upload_films/*", (req, res) -> {
@@ -101,7 +143,17 @@ public class Main {
 		return formulario;
 	}); 
 	
-
+	get("/inicio", (req, res) -> {
+		String inicio = "<h1>Modo de funcionamiento</h1>"
+				+ "<h2>Lo primero es necesario cargar archivos</h2>"
+				+ "<ul><li>Para cargar archivos: /upload_films/(categoría)</li>"
+				+ "<li>Buscar los actores de una película /vecinos/(Película)</li>"
+				+ "<li>Buscar las películas que tiene un actor /vecinos/(Actor)</li></ul>";
+		
+		return inicio;
+	}); 
+	
+	
 	
 	// You must use the name "uploaded_films_file" in the call to
 	// getPart to retrieve the uploaded file. See next call:
@@ -112,8 +164,7 @@ public class Main {
 	post("/upload", (req, res) -> {
 		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/tmp"));
 		String result = "File uploaded!";
-		System.out.println(req.attributes());
-		System.out.println(res.body());
+
 		
 		try (InputStream input = req.raw().getPart("uploaded_films_file").getInputStream()) { 
 			// getPart needs to use the same name "uploaded_films_file" used in the form
@@ -122,7 +173,8 @@ public class Main {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			statement.executeUpdate("drop table if exists films");
-			statement.executeUpdate("create table films (film string, actor string)");
+			statement.executeUpdate("drop table if exists categorias");
+			statement.executeUpdate("create table categorias (categ string, archivo string)");
 
 			// Read contents of input stream that holds the uploaded file
 			InputStreamReader isr = new InputStreamReader(input);
@@ -135,8 +187,8 @@ public class Main {
 			input.close();
 		    }
 		
-		//guardar categoria y archivo en la base de datos insert(conection,categ,archivo)
-		
+		//guardar categoría y archivo en la base de datos insert(conection,categ,archivo)
+		insert(connection,categoria,result);
 		return result;
 	    });
 
