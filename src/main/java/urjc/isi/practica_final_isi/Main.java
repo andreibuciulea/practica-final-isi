@@ -40,7 +40,7 @@ public class Main {
                                    request.params(":film"));
     }*/
 
-    public static String select(Connection conn, String table, String peticion) {
+    public static String select(Connection conn, String table, String peticion, String peticion2) {
     
 	String sql = "SELECT * FROM " + table;
 
@@ -53,8 +53,8 @@ public class Main {
 		//pstmt.setString(1, film);
 		ResultSet rs = pstmt.executeQuery();
 		Boolean encontrado = true;
-		while (rs.next() && encontrado) {
-			
+		String salida = "";
+		while (rs.next() && encontrado) {	
 			try {
 				File file = new File("test1.txt");
 				FileWriter fileWriter = new FileWriter(file);
@@ -62,28 +62,33 @@ public class Main {
 				fileWriter.write(rs.getString("archivo"));
 				fileWriter.close();
 				
-				String salida = IndexGraph("test1.txt","/", peticion);
-				System.out.println("ESto es salida:" + salida);
-				if(salida != "") {
-					result= salida;
-					
-					// guardar en BD(Tabla_vecinos): peticion/categoria(rs.getString("categ"))/vecinos(salida)
-					//
-					
-					encontrado = false;
-					
-
+				if(peticion2 == null) {
+					salida = IndexGraph("test1.txt","/", peticion);
+					if(salida != "") {
+						result= salida;
+						// guardar en BD(Tabla_vecinos): peticion/categoria
+						//(rs.getString("categ"))/vecinos(salida)
+						encontrado = false;
+					}
+				}else{
+					System.out.println("entra aqui");
+					salida = IndexGraph("test1.txt","/", peticion);
+					if (salida != "") {
+						salida = Calc_Dist("test1.txt","/", peticion, peticion2);
+						result= salida;
+						// guardar en BD(Tabla_distancia): peticion/categoria
+						//(rs.getString("categ"))/vecinos(salida)
+						encontrado = false;
+					}
 				}
 				
-				file.delete();
 
+				file.delete();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 		}
 	    } catch (SQLException e) {
-	    System.out.println("aquiii");
 	    System.out.println(e.getMessage());
 	}
 	
@@ -113,21 +118,13 @@ public class Main {
     System.out.println("Estoy en vecinos");
     //a index graph se le pasa un autor y devuelve las peliculas en las que sale
    				  //se le pasa una pelicula y devuelve los actores
-  // 	System.out.println(res[4]);
     res[4]=res[4].replace("%20"," ");
     System.out.println(res[4]);
+   //primero comprobar si está en la BSA y luego si no hacer el select.
     
-
-    
-    //primero comprobar si está en la BSA y luego si no hacer el select.
-    
-    salida = select(connection, "categorias", res[4]);
-    
-   
-    
+    salida = select(connection, "categorias", res[4], null);
     salida  = salida.replaceAll("(\n)", "<br>");
-    System.out.println(salida);
-    	
+    System.out.println(salida);   	
   
 	return salida;
     }
@@ -139,20 +136,17 @@ public class Main {
         String[] res = result.split("/");
         String[] res1 = result.split("%20");
         String salida = "";
-        System.out.println("Estoy en vecinos");
-        //a index graph se le pasa un autor y devuelve las peliculas en las que sale
-       				  //se le pasa una pelicula y devuelve los actores
-      // 	System.out.println(res[4]);
+        System.out.println("Estoy en distancia");
+        //distancia entre dos opciones que le pasemos calc_dist
         res[4]=res[4].replace("%20"," ");
         System.out.println(res[4]);
-        
+        res[5]=res[5].replace("%20"," ");
+        System.out.println(res[5]);
 
-        
         //primero comprobar si está en la BSA y luego si no hacer el select.
+        //salida = Calc_Dist("resources/data/other-data/movies.txt","/",res[4],res[5]);
+        salida = select(connection, "categorias", res[4], res[5]);
         
-        salida = select(connection, "categorias", res[4]);
-        
-       
         
         salida  = salida.replaceAll("(\n)", "<br>");
         System.out.println(salida);
@@ -161,6 +155,20 @@ public class Main {
     	return salida;
         }
     
+    public static String Calc_Dist(String filename, String delimiter, String peticion1, String peticion2) {
+        Graph G = new Graph(filename, delimiter);
+        System.out.println("p1" + peticion1);
+        
+        String respuesta = "";
+        PathFinder pf = new PathFinder(G, peticion1);
+        //System.out.println("p2");
+        for (String v : pf.pathTo(peticion2)) {
+            respuesta += "   " + v + "<br>";
+        }
+        respuesta += "Distance " + pf.distanceTo(peticion2);
+        
+        return respuesta; 
+    }
     
 	public static String IndexGraph(String filename, String delimiter, String peticion) {
 
@@ -201,6 +209,8 @@ public class Main {
 	get("/vecinos/*", Main::Vecinos);
 	
 	get("/distancia/*", Main::Distancia);
+	
+/////////////////////	get("/categoria/*", Main::Categoria);
 	
 	// In this case we use a Java 8 Lambda function to process the
 	// GET /upload_films HTTP request, and we return a form
