@@ -39,11 +39,11 @@ public class AppTest
 	}*/
 	
 	//happy path distancia
-	@Test//(expected=IOException.class)
-	public void Test_Distancia3() {
+	//@Test//(expected=IOException.class)
+	/*public void Test_Distancia3() {
 		Main.Calc_Dist("resources/data/other-data/movies.txt","/", peticion1, peticion2);
 	}
-	
+	*/
 	
 	//tercer test: la peticion no existe por lo que no tiene vecinos
 	/*@Test(expected=IOException.class)
