@@ -73,6 +73,8 @@ public class Main {
 		ResultSet rs = pstmt.executeQuery();
 		Boolean encontrado = true;
 		String salida = "";
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+
 		while (rs.next() && encontrado) {	
 			try {
 				File file = new File("test1.txt");
@@ -87,6 +89,8 @@ public class Main {
 						result= salida;
 						// guardar en BD(Tabla_vecinos): peticion/categoria
 						//(rs.getString("categ"))/vecinos(salida)
+						
+						insert_vecinos(connection,peticion,salida,rs.getString("categ"));
 						encontrado = false;
 					}
 				}else{
@@ -127,6 +131,7 @@ public class Main {
     }
     
     public static void insert_vecinos(Connection conn, String peti, String veci, String categ) {
+    	
     	String sql = "INSERT INTO Tabla_vecinos(peticion, vecinos,categoria) VALUES(?,?)";
 
     	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -167,6 +172,7 @@ public class Main {
    //primero comprobar si está en la BSA y luego si no hacer el select.
     
     salida = select(connection, "categorias", res[4], null);
+
     salida  = salida.replaceAll("(\n)", "<br>");
     System.out.println(salida);   	
   
@@ -302,6 +308,8 @@ public class Main {
 			//statement.executeUpdate("drop table if exists films");
 			//statement.executeUpdate("drop table if exists categorias");
 			//statement.executeUpdate("create table categorias (categ string, archivo string)");
+			//statement.executeUpdate("create table Tabla_vecinos (peti string, veci string, categ string)");
+			//statement.executeUpdate("create table Tabla_distancia (peti1 string, peti2 string, saltos string, dist string)");
 
 			// Read contents of input stream that holds the uploaded file
 			InputStreamReader isr = new InputStreamReader(input);

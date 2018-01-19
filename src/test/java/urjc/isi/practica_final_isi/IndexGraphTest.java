@@ -28,7 +28,7 @@ public class IndexGraphTest {
         System.setErr(null);
     }
     
-    @Test
+  /*  @Test
     public void testFromFile() throws IOException {
         // If run from Eclipse the file inputFile must be in the directory of the
         // project (../src)
@@ -40,5 +40,5 @@ public class IndexGraphTest {
             fail(e.getMessage());
         }
         assertEquals("Repeated word on line 2: word word\n", outContent.toString());
-    }
+    }*/
 }
