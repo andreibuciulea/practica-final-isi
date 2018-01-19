@@ -73,7 +73,7 @@ public class Main {
 		ResultSet rs = pstmt.executeQuery();
 		Boolean encontrado = true;
 		String salida = "";
-		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		//connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
 
 		while (rs.next() && encontrado) {	
 			try {
@@ -101,6 +101,9 @@ public class Main {
 						result= salida;
 						// guardar en BD(Tabla_distancia): peticion/categoria
 						//(rs.getString("categ"))/vecinos(salida)
+						String[] distancia = salida.split("Distance ");
+						String dist = distancia[1];
+						insert_distancia(connection,peticion,peticion2,distancia[0],dist);
 						encontrado = false;
 					}
 				}
@@ -132,7 +135,7 @@ public class Main {
     
     public static void insert_vecinos(Connection conn, String peti, String veci, String categ) {
     	
-    	String sql = "INSERT INTO Tabla_vecinos(peticion, vecinos,categoria) VALUES(?,?)";
+    	String sql = "INSERT INTO Tabla_vecinos(peti, veci, categ) VALUES(?,?,?)";
 
     	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
     		pstmt.setString(1, peti);
@@ -145,7 +148,7 @@ public class Main {
         }
     
     public static void insert_distancia(Connection conn, String peti1, String peti2, String saltos,String dist) {
-    	String sql = "INSERT INTO Tabla_distancia(peticion1, peticion2,saltos,dist) VALUES(?,?)";
+    	String sql = "INSERT INTO Tabla_distancia(peti1, peti2,saltos,dist) VALUES(?,?,?,?)";
 
     	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
     		pstmt.setString(1, peti1);
