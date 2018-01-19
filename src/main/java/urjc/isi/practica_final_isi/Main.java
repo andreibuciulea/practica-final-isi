@@ -35,10 +35,29 @@ public class Main {
 
     // Used to illustrate how to route requests to methods instead of
     // using lambda expressions
-   /* public static String doSelect(Request request, Response response) {
-	return select (connection, request.params(":table"), 
-                                   request.params(":film"));
-    }*/
+    public static String select2(Connection conn, String table,String categ, String peticion, String peticion2) {
+        String sql = "";
+    	if(table == "categorias") {
+    		sql = "SELECT * FROM " + table + "where categ=" + categ;
+    	}else if(table == "Tabla_vecinos") {
+    		sql = "SELECT * FROM " + table + "where peti=" + peticion;
+    	}else if(table == "Tabla_distancia") {
+    		sql = "SELECT * FROM " + table + "where peti1=" + peticion + "peti2=" + peticion2;
+    	}
+    	
+    	
+    	String result = new String();
+    	//consusltas que se pueden hacer:
+    	//las peliculas de esta categoría
+    	//los vecinos de esta petición (y si es una pelicula decir la categoría)
+    	//los saltos que hay entre dos peticiones
+    	           //de momento sólo devolverá un valor (string)
+    	
+    	
+    	
+    	 //System.out.println("esto es result: " + result);
+    	return result;
+        }
 
     public static String select(Connection conn, String table, String peticion, String peticion2) {
     
@@ -81,8 +100,6 @@ public class Main {
 						encontrado = false;
 					}
 				}
-				
-
 				file.delete();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -108,6 +125,33 @@ public class Main {
 	    System.out.println(e.getMessage());
 	}
     }
+    
+    public static void insert_vecinos(Connection conn, String peti, String veci, String categ) {
+    	String sql = "INSERT INTO Tabla_vecinos(peticion, vecinos,categoria) VALUES(?,?)";
+
+    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    		pstmt.setString(1, peti);
+    		pstmt.setString(2, veci);
+    		pstmt.setString(3, categ);
+    		pstmt.executeUpdate();
+    	    } catch (SQLException e) {
+    	    System.out.println(e.getMessage());
+    	}
+        }
+    
+    public static void insert_distancia(Connection conn, String peti1, String peti2, String saltos,String dist) {
+    	String sql = "INSERT INTO Tabla_distancia(peticion1, peticion2,saltos,dist) VALUES(?,?)";
+
+    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    		pstmt.setString(1, peti1);
+    		pstmt.setString(2, peti2);
+    		pstmt.setString(3, saltos);
+    		pstmt.setString(4, dist);
+    		pstmt.executeUpdate();
+    	    } catch (SQLException e) {
+    	    System.out.println(e.getMessage());
+    	}
+        }
     
     public static String Vecinos(Request request, Response response) throws ClassNotFoundException, URISyntaxException {
     	
@@ -282,6 +326,6 @@ public class Main {
 	if (processBuilder.environment().get("PORT") != null) {
 	    return Integer.parseInt(processBuilder.environment().get("PORT"));
 	}
-	return 7654; // return default port if heroku-port isn't set (i.e. on localhost)
+	return 4567; // return default port if heroku-port isn't set (i.e. on localhost)
     }
 }
