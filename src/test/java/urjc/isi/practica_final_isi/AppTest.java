@@ -21,6 +21,13 @@ public class AppTest
 		peticion1 = "Kidman, Nicole";
 		peticion2 = "Titanic";
 	}
+	//primer test: ambas peticiones no existen para calcular la distancia
+	@Test //(expected=IOException.class)
+	public void Test_Distancia() {
+		Main.Calc_Dist("resources/data/other-data/movies.txt","/", peticion1, peticion2);
+	}
+	
+	
 	
 	//primer test: una de las peticiones no existe para calcular la distancia
 	/*@Test(expected=IOException.class)
@@ -29,15 +36,10 @@ public class AppTest
 		Main.Calc_Dist("resources/data/other-data/movies.txt","/", peticion1, peticion2);
 	}
 	
+	*/
+
 	
-	//segundo test: ambas peticiones no existen para calcular la distancia
-	@Test //(expected=IOException.class)
-	public void Test_Distancia2() {
-		peticion1 = null;
-		peticion2 = null;
-		Main.Calc_Dist("resources/data/other-data/movies.txt","/", peticion1, peticion2);
-	}*/
-	
+	/*
 	//happy path distancia
 	//@Test//(expected=IOException.class)
 	/*public void Test_Distancia3() {
@@ -52,12 +54,6 @@ public class AppTest
 		Main.IndexGraph("resources/data/other-data/movies.txt","/", peticion1);
 	}
 	*/
-	
-	//happy path vecinos
-	@Test(expected=IOException.class)
-	public void Test_Vecinos2() {
-		Main.IndexGraph("resources/data/other-data/movies.txt","/", peticion1);
-	}
 	
 	
 }
