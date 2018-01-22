@@ -51,17 +51,15 @@ public class AppTest
 		peticion1 = null;
 		Main.IndexGraph("resources/data/other-data/movies.txt","/", peticion1);
 	}
+	*/
 	
 	//happy path vecinos
 	@Test(expected=IOException.class)
 	public void Test_Vecinos2() {
 		Main.IndexGraph("resources/data/other-data/movies.txt","/", peticion1);
-	}*/
+	}
 	
 	
 }
 
 
-//dudas: 
-//diferencia entre expected=IOException vs excepted=NullPointerException
-//porque funciona igual con ello que sin ello 
