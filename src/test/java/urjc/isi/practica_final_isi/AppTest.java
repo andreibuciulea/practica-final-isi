@@ -2,6 +2,8 @@ package urjc.isi.practica_final_isi;
 
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.*; //paquete para test
@@ -19,7 +21,13 @@ public class AppTest
 	@Before public void inicializar()
 	{
 		peticion1 = "Kidman, Nicole";
-		peticion2 = "Titanic";
+		peticion2 = "Hanks, Tom";
+	}
+	
+	@Test //(expected=IOException.class)
+	public void Test_Distancia() {
+		String resultado = "   Kidman, Nicole<br>   Batman Forever (1995)<br>   Fink, John<br>   Bonfire of the Vanities, The (1990)<br>   Hanks, Tom<br>Distance 4";
+		assertEquals( resultado, Main.Calc_Dist("movies.txt","/",peticion1, peticion2));
 	}
 	
 	//primer test: una de las peticiones no existe para calcular la distancia
