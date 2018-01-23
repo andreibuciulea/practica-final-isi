@@ -1,7 +1,5 @@
 package urjc.isi.practica_final_isi;
 
-
-
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedWriter;
@@ -14,10 +12,6 @@ import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.*; //paquete para test
-
-
-
-
 
 public class AppTest   
 {
@@ -63,8 +57,8 @@ public class AppTest
 		File fichero = new File("data/other-data/NewFile.txt");
 		BufferedWriter bw = new BufferedWriter(new FileWriter(fichero));
 		assertEquals( resultado, Main.IndexGraph("data/other-data/NewFile.txt","/", busco));
+		bw.close();
 	}
-	
 	
 	private static Connection connection;
 	
@@ -76,7 +70,7 @@ public class AppTest
 		String categ = null;
 		String peticion = "Arvanites, Steven";
 		String peticion2 = null;
-		String resultado = "  'Crocodile' Dundee II (1988)\n";
+		String resultado = "";
 		assertEquals (resultado, Main.select2(connection, table,categ,peticion,peticion2));
 	}
 	
@@ -91,7 +85,27 @@ public class AppTest
 		String resultado = "";
 		assertEquals (resultado, Main.select2(connection, table,categ,peticion,peticion2));
 	}
+	
+	//TEST 4: happy path Select
+	@Test 
+	public void Test_select() throws SQLException{
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		String table = "Tabla_distancia";
+		String peticion = "Ducommun, Rick";
+		String peticion2 = "Drier, Moosie";
+		String resultado = "";
+		assertEquals (resultado, Main.select(connection, table,peticion,peticion2));
+	}
+	
+	//TEST 4: Select para un actor que no este dentro de la BD 
+	@Test 
+	public void Test_select_1() throws SQLException{
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		String table = "Tabla_distancia";
+		String peticion = "Celia__";
+		String peticion2 = "Kidman, Nicole";
+		String resultado = "";
+		assertEquals (resultado, Main.select(connection, table,peticion,peticion2));
+	}
+	
 }
-
-
-
