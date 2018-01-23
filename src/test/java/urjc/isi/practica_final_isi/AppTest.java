@@ -117,19 +117,19 @@ public class AppTest
 	Request request = null;
 	Response response= null;
 	
-	//TEST 5: categoria
+	//TEST 5: categoria. Request, response son null
 	@Test (expected=NullPointerException.class)
 	public void Test_categoria()  throws ClassNotFoundException, URISyntaxException {
 		Main.Categoria(request, response);
 	}
 	
-	//TEST 6: vecinos
+	//TEST 6: vecinos. Request, response son null
 	@Test (expected=NullPointerException.class)
 	public void Test_Vecinos_RequestResponse() throws ClassNotFoundException, URISyntaxException {
 		Main.Vecinos(request, response);
 	}
 	
-	//TEST 7: Distancia
+	//TEST 7: Distancia. Request, response son null
 	@Test (expected=NullPointerException.class)
 	public void Test_Distancia_RequestResponse() throws ClassNotFoundException, URISyntaxException {
 		Main.Distancia(request, response);
