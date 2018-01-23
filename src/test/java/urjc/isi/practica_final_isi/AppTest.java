@@ -27,7 +27,7 @@ public class AppTest
 	@Test //(expected=IOException.class)
 	public void Test_Distancia() {
 		String resultado = "   Kidman, Nicole<br>   Batman Forever (1995)<br>   Fink, John<br>   Bonfire of the Vanities, The (1990)<br>   Hanks, Tom<br>Distance 4";
-		assertEquals( resultado, Main.Calc_Dist("movies.txt","/",peticion1, peticion2));
+		assertEquals( resultado, Main.Calc_Dist("resources/data/other-data/movies.txt","/",peticion1, peticion2));
 	}
 	
 	
@@ -36,7 +36,7 @@ public class AppTest
 	public void Test_Vecinos() {
 		String busco = "Melson, Sara";
 		String resultado = "  Malice (1993)\n";
-		assertEquals( resultado, Main.IndexGraph("movies.txt","/", busco));
+		assertEquals( resultado, Main.IndexGraph("resources/data/other-data/movies.txt","/", busco));
 	}
 	
 	//primer test: una de las peticiones no existe para calcular la distancia
