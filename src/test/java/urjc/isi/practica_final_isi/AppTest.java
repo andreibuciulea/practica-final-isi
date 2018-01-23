@@ -8,6 +8,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import org.junit.Before;
 import org.junit.*; //paquete para test
 
@@ -62,8 +66,31 @@ public class AppTest
 	}
 	
 	
+	private static Connection connection;
 	
+	//TEST 3: happy path select2
+	@Test
+	public void Test_Select2 () throws SQLException {
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		String table = "Tabla_vecinos";
+		String categ = null;
+		String peticion = "Arvanites, Steven";
+		String peticion2 = null;
+		String resultado = "  'Crocodile' Dundee II (1988)\n";
+		assertEquals (resultado, Main.select2(connection, table,categ,peticion,peticion2));
+	}
 	
+	//TEST 3.1: Select2 para un actor que no este dentro de la BD
+	@Test 
+	public void Test_Select2_1 () throws SQLException {
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		String table = "Tabla_distancia";
+		String categ = null;
+		String peticion = "Wilson, Alec";
+		String peticion2 = "Kidman, Nicole";
+		String resultado = "";
+		assertEquals (resultado, Main.select2(connection, table,categ,peticion,peticion2));
+	}
 }
 
 
