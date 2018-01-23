@@ -4,6 +4,9 @@ package urjc.isi.practica_final_isi;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.*; //paquete para test
@@ -24,48 +27,44 @@ public class AppTest
 		peticion2 = "Hanks, Tom";
 	}
 	
-	@Test //(expected=IOException.class)
+	//TEST 1: Happy path Calc_Dist
+	@Test 
 	public void Test_Distancia() {
 		String resultado = "   Kidman, Nicole<br>   Batman Forever (1995)<br>   Fink, John<br>   Bonfire of the Vanities, The (1990)<br>   Hanks, Tom<br>Distance 4";
 		assertEquals( resultado, Main.Calc_Dist("data/other-data/movies.txt","/",peticion1, peticion2));
 	}
 	
+	// TEST 1.1: Ambas peticiones a null
+	@Test (expected=IllegalArgumentException.class)
+	public void Test_Distancia1() {
+		peticion1 = null;
+		peticion2= null;
+		String resultado = "   Kidman, Nicole<br>   Batman Forever (1995)<br>   Fink, John<br>   Bonfire of the Vanities, The (1990)<br>   Hanks, Tom<br>Distance 4";
+		assertEquals( resultado, Main.Calc_Dist("data/other-data/movies.txt","/",peticion1, peticion2));
+	}
 	
-	//segundo test
-	@Test //(expected=IOException.class)
+	//TEST 2: Happy path IndexGraph
+	@Test 
 	public void Test_Vecinos() {
 		String busco = "Melson, Sara";
 		String resultado = "  Malice (1993)\n";
 		assertEquals( resultado, Main.IndexGraph("data/other-data/movies.txt","/", busco));
 	}
 	
-	//primer test: una de las peticiones no existe para calcular la distancia
-	/*@Test(expected=IOException.class)
-	public void Test_Distancia1() {
-		peticion1 = null;
-		Main.Calc_Dist("resources/data/other-data/movies.txt","/", peticion1, peticion2);
+	// TEST 2.2: Fichero vacío
+	@Test 
+	public void Test_Vecinos1() throws IOException {
+		String busco = "Melson, Sara";
+		String resultado = "";
+		File fichero = new File("data/other-data/NewFile.txt");
+		BufferedWriter bw = new BufferedWriter(new FileWriter(fichero));
+		assertEquals( resultado, Main.IndexGraph("data/other-data/NewFile.txt","/", busco));
 	}
 	
-	*/
-
 	
-	/*
-	//happy path distancia
-	//@Test//(expected=IOException.class)
-	/*public void Test_Distancia3() {
-		Main.Calc_Dist("resources/data/other-data/movies.txt","/", peticion1, peticion2);
-	}
-	*/
-	
-	//tercer test: la peticion no existe por lo que no tiene vecinos
-	/*@Test(expected=IOException.class)
-	public void Test_Vecinos() {
-		peticion1 = null;
-		Main.IndexGraph("resources/data/other-data/movies.txt","/", peticion1);
-	}
-	*/
 	
 	
 }
+
 
 
