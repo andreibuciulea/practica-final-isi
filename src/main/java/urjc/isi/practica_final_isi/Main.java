@@ -88,7 +88,7 @@ public class Main {
     				//System.out.println("Esto es el archivo:" + rs.getString("archivo"));
     				fileWriter.write(rs.getString("archivo"));
     				fileWriter.close();
-				
+    				
     				if(peticion2 == null || peticion2 == "needed") {
     					salida = IndexGraph("test1.txt","/", peticion);
     					if(salida != "") {
@@ -112,6 +112,9 @@ public class Main {
     						encontrado = false;
     					}
     				}
+    				if (salida == ""){
+    					return "<h1>Datos erroneos!</h1> <br> Si es un actor: Apellido, Nombre <br> Si es una película: Título (año) <br>--->La primera letra en mayusculas";
+    				}
     				file.delete();
     			}catch (IOException e) {
     				e.printStackTrace();
@@ -120,7 +123,6 @@ public class Main {
     	} catch (SQLException e) {
     		System.out.println(e.getMessage());
     	}
-    	//System.out.println("esto es result: " + result);
     	return result;
     }
     
@@ -135,39 +137,55 @@ public class Main {
 	    }
     }
     
-    public static void insert_vecinos(Connection conn, String peti, String veci, String categ) {
+    public static Integer insert_vecinos(Connection conn, String peti, String veci, String categ) {
     	String sql = "INSERT INTO Tabla_vecinos(peti, veci, categ) VALUES(?,?,?)";
-    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    		pstmt.setString(1, peti);
-    		pstmt.setString(2, veci);
-    		pstmt.setString(3, categ);
-    		pstmt.executeUpdate();
-    	    } catch (SQLException e) {
-    	    System.out.println(e.getMessage());
-    	}
+    	if (peti == null) {
+    		return -1;
+    	}else {
+	    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    		pstmt.setString(1, peti);
+	    		pstmt.setString(2, veci);
+	    		pstmt.setString(3, categ);
+	    		pstmt.executeUpdate();
+	    	    } catch (SQLException e) {
+	    	    System.out.println(e.getMessage());
+	    	}
+	    	return 0;
+    	}	
+    	
     }
     
-    public static void insert_distancia(Connection conn, String peti1, String peti2, String saltos,String dist) {
+    public static Integer insert_distancia(Connection conn, String peti1, String peti2, String saltos,String dist) {
     	String sql = "INSERT INTO Tabla_distancia(peti1, peti2,saltos,dist) VALUES(?,?,?,?)";
-    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    		pstmt.setString(1, peti1);
-    		pstmt.setString(2, peti2);
-    		pstmt.setString(3, saltos);
-    		pstmt.setString(4, dist);
-    		pstmt.executeUpdate();
-    	    } catch (SQLException e) {
-    	    System.out.println(e.getMessage());
+    	if (peti1 == null || peti2 == null) {
+    		return -1;
+    	}else {
+	    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    		pstmt.setString(1, peti1);
+	    		pstmt.setString(2, peti2);
+	    		pstmt.setString(3, saltos);
+	    		pstmt.setString(4, dist);
+	    		pstmt.executeUpdate();
+	    	    } catch (SQLException e) {
+	    	    System.out.println(e.getMessage());
+	    	}
+	    	return 0;	
     	}
     }
     
-    public static void insert_categoria(Connection conn, String categoria, String pelicula) {
+    public static Integer insert_categoria(Connection conn, String categoria, String pelicula) {
     	String sql = "INSERT INTO Tabla_categoria(categoria,pelicula) VALUES(?,?)";
-    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    		pstmt.setString(1, categoria);
-    		pstmt.setString(2, pelicula);
-    		pstmt.executeUpdate();
-    	    } catch (SQLException e) {
-    	    System.out.println(e.getMessage());
+    	if (categoria == null || pelicula == null) {
+    		return -1;
+    	}else {
+	    	try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    		pstmt.setString(1, categoria);
+	    		pstmt.setString(2, pelicula);
+	    		pstmt.executeUpdate();
+	    	    } catch (SQLException e) {
+	    	    System.out.println(e.getMessage());
+	    	}
+	    	return 0;
     	}
     }
     

@@ -76,7 +76,7 @@ public class AppTest
 		String categ = null;
 		String peticion = "Arvanites, Steven";
 		String peticion2 = null;
-		String resultado = "";
+		String resultado = "  'Crocodile' Dundee II (1988)\n";
 		assertEquals (resultado, Main.select2(connection, table,categ,peticion,peticion2));
 	}
 	
@@ -92,28 +92,26 @@ public class AppTest
 		assertEquals (resultado, Main.select2(connection, table,categ,peticion,peticion2));
 	}
 	
-	//TEST 4: happy path Select
-	@Test 
-	public void Test_select() throws SQLException{
-		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
-		String table = "Tabla_distancia";
-		String peticion = "Ducommun, Rick";
-		String peticion2 = "Drier, Moosie";
-		String resultado = "";
-		assertEquals (resultado, Main.select(connection, table,peticion,peticion2));
-	}
-	
-	//TEST 4.1: Select para un actor que no este dentro de la BD 
+	//TEST 4: Select para un actor que no este dentro de la BD 
 	@Test 
 	public void Test_select_1() throws SQLException{
 		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
-		String table = "Tabla_distancia";
+		String table = "categorias";
 		String peticion = "Celia__";
 		String peticion2 = "Kidman, Nicole";
-		String resultado = "";
+		String resultado = "<h1>Datos erroneos!</h1> <br> Si es un actor: Apellido, Nombre <br> Si es una película: Título (año) <br>--->La primera letra en mayusculas";
 		assertEquals (resultado, Main.select(connection, table,peticion,peticion2));
 	}
-	
+	//TEST 4.1 Select nombre de actor o pelicula mal introducidos
+	@Test
+	public void Test_select_2() throws SQLException {
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		String table = "categorias";
+		String peticion = "titanic";
+		String peticion2 = null;
+		String resultado = "<h1>Datos erroneos!</h1> <br> Si es un actor: Apellido, Nombre <br> Si es una película: Título (año) <br>--->La primera letra en mayusculas";
+		assertEquals (resultado, Main.select(connection, table,peticion,peticion2));
+	}
 	Request request = null;
 	Response response= null;
 	
@@ -135,4 +133,25 @@ public class AppTest
 		Main.Distancia(request, response);
 	} 
 	
+	//TEST 8: una de las peticiones es null -> retorna -1
+	@Test 
+	public void Test_Insert_Distancia() throws SQLException {
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		String peti1 = "Kidman, Nicole";
+		String peti2 = null;
+		String saltos = " ";
+		String dist = "2";
+		Integer resultado = -1;
+		assertEquals(resultado, Main.insert_distancia(connection, peti1, peti2, saltos, dist));
+	} 
+	//TEST 9: los vecinos son null, pero la peticion no -> retorna 0
+	@Test 
+	public void Test_Insert_Vecinos() throws SQLException {
+		connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+		String peti1 = "Kidman, Nicole";
+		String veci = null;
+		String categoria = "accion";
+		Integer resultado = 0;
+		assertEquals(resultado, Main.insert_vecinos(connection, peti1,veci, categoria));
+	} 
 }
