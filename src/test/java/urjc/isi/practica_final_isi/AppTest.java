@@ -99,7 +99,7 @@ public class AppTest
 		String table = "categorias";
 		String peticion = "Celia__";
 		String peticion2 = "Kidman, Nicole";
-		String resultado = "<h1>Datos erroneos!</h1> <br> Si es un actor: Apellido, Nombre <br> Si es una película: Título (año) <br>--->La primera letra en mayusculas";
+		String resultado = "";
 		assertEquals (resultado, Main.select(connection, table,peticion,peticion2));
 	}
 	//TEST 4.1 Select nombre de actor o pelicula mal introducidos
@@ -109,7 +109,7 @@ public class AppTest
 		String table = "categorias";
 		String peticion = "titanic";
 		String peticion2 = null;
-		String resultado = "<h1>Datos erroneos!</h1> <br> Si es un actor: Apellido, Nombre <br> Si es una película: Título (año) <br>--->La primera letra en mayusculas";
+		String resultado = "";
 		assertEquals (resultado, Main.select(connection, table,peticion,peticion2));
 	}
 	Request request = null;

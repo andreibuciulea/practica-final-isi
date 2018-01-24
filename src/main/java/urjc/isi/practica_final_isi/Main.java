@@ -112,7 +112,7 @@ public class Main {
     						encontrado = false;
     					}
     				}
-    				if (salida == ""){
+    				if (result == ""){
     					return "<h1>Datos erroneos!</h1> <br> Si es un actor: Apellido, Nombre <br> Si es una película: Título (año) <br>--->La primera letra en mayusculas";
     				}
     				file.delete();
