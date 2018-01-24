@@ -212,7 +212,7 @@ public class Main {
         		System.out.println("He mirado en la tabla de vecinos");
         	}
         	if(salida == "") {
-        		salida = select(connection, "categorias", res[4], null);
+        		salida = select(connection, "categorias", res[4], "needed");
         		System.out.println("He mirado en la tabla de categorias");
         	}
         	salida = "La película " + res[4] + " es de la categoría: " + salida;
