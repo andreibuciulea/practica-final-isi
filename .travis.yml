@@ -1,12 +1,12 @@
 language: java
-deploy:
-  skip_cleanup: true
-  provider: heroku
-  app: practica-final-isi
-  notifications:
+notifications:
     email:
       - calderonv94@gmail.com
       - c.martinher@outlook.es
       - pheras@gmail.es
+deploy:
+  skip_cleanup: true
+  provider: heroku
+  app: practica-final-isi
   api_key:
     secure: PhT9pRmcY3Xu/Ni0BXXg8yIxVCw7/hGqTAIpyLDYc79n2xRbQzgdonIibK9+/Mvl+fX95NmYOlUCFIFj+wHhLs3GnNIrHKWVo35Te+FYsUL2EA5FjyTa5T22j5qyqJUigTwyfLdhsN5buy8BJcXn3RZghjJaFPlK0z/Eme32J3l3wrqflaB6aj3XHzQ7xqQWKFIoZhGPix6mRKqa6maSc5+UbvDhb9ogz/uW8U3+PaIUAR92PfEMq4S/d01F1UwPUUVi2htTHlSbE3CONV/Ll+9MwUcA0S/Gkl1GyEFwsmQVooVxYvadEn0L7oSs9g39Tq4hChpxtyJjXn8A3gPMkAWCCQlyb781BHP3C31v2p9qAn7tsA3DpC+heeeN7pa34KtrXYpyA3/cBL8bIG0pAbyRMZ1LxBmRD7pokNdl577bK1FjvAkFaWtFprVYwoS6exjU4Kn0PTw7zwwtvdp1X79QCJDGrQmIzA0ncmIqcsDL78PKFplQyMiB/gSsOsiiWLBl24wSmpAxAefQkrccBbCXyIac7dD0iRcqUy/4RXHUEutBGiTvtSuOe42Fn/prcS8r+IXxT8ReUmrmuWIBp4jqBZNHhI5nBM1WQaBXEf1H7dsv2viTQlkpNO+gw3r1xRTD7mac8S4hJbL885aDsxpRETi+Ad/CRkL6efj0olQ=
